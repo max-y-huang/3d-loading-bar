@@ -1,0 +1,37 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-size: 24px;
+  font-family: sans-serif;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+button {
+  font-size: inherit;
+  font-family: inherit;
+  padding: 0.5em 1em;
+}
+
+#sketch-container {
+  flex-basis: 0;
+  flex-grow: 1;
+  overflow: hidden !important;
+}
+
+#sketch-container canvas {
+  pointer-events: none;
+}
+
+#info-container {
+  flex-grow: 0;
+  padding: 24px;
+  text-align: center;
+  background-color: #d1d1d1;
+}
+
+#info-container button {
+  margin-top: 12px;
+}

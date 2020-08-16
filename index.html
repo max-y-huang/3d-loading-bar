@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/p5.min.js"></script>
+  <title>3D Loading Bar</title>
+</head>
+<body>
+  <script src="sketch.js"></script>
+  <div id="sketch-container"></div>
+  <div id="info-container">
+    <span id="step-display"></span>
+    <br />
+    <button onClick="nextStep();">Next Step</button>
+  </div>
+  <script>
+    const stepDisplayDOM = document.getElementById('step-display');
+    const loadingBar = new p5(sketch);
+    
+    let currentStep = 0;
+    let numberOfSteps = 7;
+
+    const nextStep = () => {
+      if (currentStep === numberOfSteps) {  // The current step cannot exceed the total number of steps.
+        return;
+      }
+      currentStep += 1;
+      stepDisplayDOM.innerHTML = 'Step ' + currentStep + ' out of ' + numberOfSteps;
+      loadingBar.setTarget(currentStep / numberOfSteps);
+    }
+    // Move from step 0 to step 1.
+    nextStep();
+  </script>
+</body>
+</html>
