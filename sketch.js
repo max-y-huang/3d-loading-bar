@@ -19,6 +19,8 @@ const sketch = p => {
   let xColour = [ 0, 208, 0 ];
   let zColour = [ 0, 104, 0 ];
   let emptyColour = [ 144, 144, 144 ];
+  let xColourFinished = [ 0, 208, 208 ];
+  let zColourFinished = [ 0, 104, 104 ];
 
   // Tracks loading bar movements.
   let loadingBarSteps = [
@@ -90,13 +92,13 @@ const sketch = p => {
     steps.forEach(step => {
       // Draw a plane in the x-direction if applicable.
       if (step.dir === 'x') {
-        p.fill(xColour);
+        p.fill(value >= 1 ? xColourFinished : xColour);
         drawPlaneX(pos.x, pos.z, step.length);
         pos.x += step.length;
       }
       // Draw a plane in the z-direction if applicable.
       else if (step.dir === 'z') {
-        p.fill(zColour);
+        p.fill(value >= 1 ? zColourFinished : zColour);
         drawPlaneZ(pos.x, pos.z, step.length);
         pos.z += step.length;
       }
