@@ -9,10 +9,11 @@ const sketch = p => {
   let value = 0;
   let target = 0;
   let speed = 0.01;
+  let freeze = true;
 
   // Loading bar animation (z-direction specific).
   let zOffset = 0;
-  let maxZOffset = 1.2;
+  let maxZOffset = 1000;  // Relative to the loading bar width.
   let zGrowDirection = -1;
 
   // Colours.
@@ -23,12 +24,24 @@ const sketch = p => {
   let zColourFinished = [ 0, 104, 104 ];
 
   // Tracks loading bar movements.
-  let loadingBarSteps = [
-    { dir: 'x', length: 0 }
-  ];
+  let loadingBarSteps = [ { dir: 'x', length: 0 } ];
+
+  // Runs when the loading bar finishes.
+  let onFinishedFunc = () => {};
+
+  p.start = () => {
+    value = 0;
+    target = 0;
+    loadingBarSteps = [ { dir: 'x', length: 0 } ];
+    freeze = false;
+  }
 
   p.setTarget = newTarget => {
     target = Math.max(newTarget, target);  // Target cannot go down.
+  }
+
+  p.onFinished = func => {
+    onFinishedFunc = func;
   }
 
   p.setup = () => {
@@ -39,7 +52,9 @@ const sketch = p => {
   
   p.draw = () => {
     // Update.
-    updateLoadingBar(speed);    
+    if (!freeze) {
+      updateLoadingBar(speed);
+    }    
     // Draw.
     p.background(255);
     p.push();
@@ -58,6 +73,8 @@ const sketch = p => {
   const updateLoadingBar = stepSize => {
     // Return if the value reached the end of the loading bar.
     if (value >= 1) {
+      onFinishedFunc();
+      freeze = true;
       return;
     }
 

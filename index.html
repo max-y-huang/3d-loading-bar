@@ -11,16 +11,25 @@
   <script src="sketch.js"></script>
   <div id="sketch-container"></div>
   <div id="info-container">
-    <span id="step-display"></span>
+    <span id="step-display">Click the start button to simulate loading.</span>
     <br />
-    <button onClick="nextStep();">Next Step</button>
+    <button id="start-button" onClick="start();">Start</button>
   </div>
   <script>
+    const startButtonDOM = document.getElementById('start-button');
     const stepDisplayDOM = document.getElementById('step-display');
     const loadingBar = new p5(sketch);
     
     let currentStep = 0;
     let numberOfSteps = 7;
+
+    const automate = stepsLeft => {
+      if (stepsLeft === 0) {
+        return;
+      }
+      nextStep();
+      setTimeout(() => automate(stepsLeft - 1), Math.random() < 0.3 ? 0 : Math.random() * 800 + 400);
+    }
 
     const nextStep = () => {
       if (currentStep === numberOfSteps) {  // The current step cannot exceed the total number of steps.
@@ -30,8 +39,20 @@
       stepDisplayDOM.innerHTML = 'Step ' + currentStep + ' out of ' + numberOfSteps;
       loadingBar.setTarget(currentStep / numberOfSteps);
     }
-    // Move from step 0 to step 1.
-    nextStep();
+
+    const start = () => {
+      startButtonDOM.style.display = 'none';
+      currentStep = 0;
+      loadingBar.start();
+      automate(numberOfSteps);
+    }
+
+    const stop = () => {
+      stepDisplayDOM.innerHTML = 'Done!';
+      startButtonDOM.style.display = 'inline';
+    }
+
+    loadingBar.onFinished(() => stop());
   </script>
 </body>
 </html>
