@@ -17,11 +17,8 @@ const sketch = p => {
   let zGrowDirection = -1;
 
   // Colours.
-  let xColour = [ 0, 208, 0 ];
-  let zColour = [ 0, 104, 0 ];
+  let colour = [ 0, 208, 0 ];
   let emptyColour = [ 144, 144, 144 ];
-  let xColourFinished = [ 0, 208, 208 ];
-  let zColourFinished = [ 0, 104, 104 ];
 
   // Tracks loading bar movements.
   let loadingBarSteps = [ { dir: 'x', length: 0 } ];
@@ -32,6 +29,8 @@ const sketch = p => {
   p.start = () => {
     value = 0;
     target = 0;
+    zOffset = 0;
+    zGrowDirection = 0;
     loadingBarSteps = [ { dir: 'x', length: 0 } ];
     freeze = false;
   }
@@ -40,14 +39,18 @@ const sketch = p => {
     target = Math.max(newTarget, target);  // Target cannot go down.
   }
 
+  p.changeColour = newColour => {
+    colour = newColour;
+  }
+
   p.onFinished = func => {
     onFinishedFunc = func;
   }
 
   p.setup = () => {
-    p.createCanvas(p.windowWidth, p.windowHeight, p.WEBGL).parent('sketch-container');
-    p.ortho(-p.width / 2, p.width / 2, p.height / 2, -p.height / 2, -10000, 10000);
-    p.normalMaterial();
+    p.createCanvas(600, 600, p.WEBGL).parent('sketch-container');
+    p.frameRate(60);
+    p.ortho(-p.width / 2, p.width / 2, -p.height / 2, p.height / 2, -10000, 10000);
   }
   
   p.draw = () => {
@@ -56,18 +59,15 @@ const sketch = p => {
       updateLoadingBar(speed);
     }    
     // Draw.
+    p.orbitControl();
     p.background(255);
+    p.ambientLight(128);
+    p.directionalLight(255, 255, 255, 0, -1, -1);
+    p.noStroke();
     p.push();
-    p.rotateX(0.3);
-    p.rotateY(-0.3);
     p.translate(-0.5 * width, 0, 0);
     drawLoadingBar(loadingBarSteps);
     p.pop();
-  }
-
-  p.windowResized = () => {
-    p.resizeCanvas(p.windowWidth, p.windowHeight);
-    p.ortho(-p.width / 2, p.width / 2, p.height / 2, -p.height / 2, -10000, 10000);
   }
 
   const updateLoadingBar = stepSize => {
@@ -105,23 +105,23 @@ const sketch = p => {
   
   const drawLoadingBar = steps => {
     let pos = { x: 0, z: 0 };  // Tracks current position.
+    
+    p.ambientMaterial(colour);
     // Loop through all steps.
     steps.forEach(step => {
       // Draw a plane in the x-direction if applicable.
       if (step.dir === 'x') {
-        p.fill(value >= 1 ? xColourFinished : xColour);
         drawPlaneX(pos.x, pos.z, step.length);
         pos.x += step.length;
       }
       // Draw a plane in the z-direction if applicable.
       else if (step.dir === 'z') {
-        p.fill(value >= 1 ? zColourFinished : zColour);
         drawPlaneZ(pos.x, pos.z, step.length);
         pos.z += step.length;
       }
     });
     // Draw a plane in the x-direction to represent empty area.
-    p.fill(emptyColour);
+    p.ambientMaterial(emptyColour);
     drawPlaneX(pos.x, pos.z, 1 - pos.x);
   }
   

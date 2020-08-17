@@ -18,11 +18,20 @@ button {
 #sketch-container {
   flex-basis: 0;
   flex-grow: 1;
-  overflow: hidden !important;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#sketch-container h4 {
+  margin-top: 0;
 }
 
 #sketch-container canvas {
-  pointer-events: none;
+  cursor: move;
+  border: 4px dotted #404040;
 }
 
 #info-container {

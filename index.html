@@ -9,7 +9,10 @@
 </head>
 <body>
   <script src="sketch.js"></script>
-  <div id="sketch-container"></div>
+  <script src="automate.js"></script>
+  <div id="sketch-container">
+    <h4>3D Loading Bar (use mouse to rotate)</h4>
+  </div>
   <div id="info-container">
     <span id="step-display">Click the start button to simulate loading.</span>
     <br />
@@ -23,14 +26,6 @@
     let currentStep = 0;
     let numberOfSteps = 7;
 
-    const automate = stepsLeft => {
-      if (stepsLeft === 0) {
-        return;
-      }
-      nextStep();
-      setTimeout(() => automate(stepsLeft - 1), Math.random() < 0.3 ? 0 : Math.random() * 800 + 400);
-    }
-
     const nextStep = () => {
       if (currentStep === numberOfSteps) {  // The current step cannot exceed the total number of steps.
         return;
@@ -41,15 +36,17 @@
     }
 
     const start = () => {
-      startButtonDOM.style.display = 'none';
+      startButtonDOM.disabled = true;
       currentStep = 0;
+      loadingBar.changeColour([ 0, 208, 0 ]);
       loadingBar.start();
       automate(numberOfSteps);
     }
 
     const stop = () => {
+      loadingBar.changeColour([ 0, 208, 208 ]);
       stepDisplayDOM.innerHTML = 'Done!';
-      startButtonDOM.style.display = 'inline';
+      startButtonDOM.disabled = false;
     }
 
     loadingBar.onFinished(() => stop());
